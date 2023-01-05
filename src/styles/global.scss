@@ -8,8 +8,8 @@ html {
 }
 
 body {
+  min-height: 100vh;
   background-color: var(--color-white);
-  color: var(--color-black);
 }
 
 a {
