@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const path = require('path')
+const path = require('path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -8,6 +8,6 @@ const nextConfig = {
   sassOptions: {
     includePaths: [path.join(__dirname, 'src/styles')],
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

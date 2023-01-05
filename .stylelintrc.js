@@ -13,4 +13,4 @@ module.exports = {
     'selector-class-pattern': null,
     'scss/at-mixin-pattern': null,
   },
-}
+};

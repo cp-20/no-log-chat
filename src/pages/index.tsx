@@ -1,6 +1,6 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Styles from '@/styles/pages/index.module.scss'
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import Styles from '@/styles/pages/index.module.scss';
 
 const Home: NextPage = () => {
   return (
@@ -10,7 +10,7 @@ const Home: NextPage = () => {
       </Head>
       <p className={Styles.text}>Hello World</p>
     </>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
