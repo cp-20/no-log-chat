@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai';
 import { atom } from 'jotai';
-import { useEffect } from 'react';
-import { TimelineAtom } from '@/atoms/timeline';
+import { useCallback, useEffect } from 'react';
+import { timeline, TimelineAtom } from '@/atoms/timeline';
 import { useUsernameAtom } from '@/atoms/username';
 
 const socketAtom = atom<WebSocket | null>(null);
@@ -10,6 +10,13 @@ export const useChat = () => {
   const [socket, setSocket] = useAtom(socketAtom);
   const [_, setTimeline] = useAtom(TimelineAtom);
   const username = useUsernameAtom();
+
+  const addTimeline = useCallback(
+    (data: timeline) => {
+      setTimeline((timeline) => [data, ...timeline].filter((_, i) => i < 4));
+    },
+    [setTimeline],
+  );
 
   useEffect(() => {
     setSocket((socket) => {
@@ -21,15 +28,29 @@ export const useChat = () => {
   useEffect(() => {
     if (socket) {
       socket.onmessage = (res) => {
-        const message = JSON.parse(res.data);
-        if (message.type === 'message') {
-          setTimeline((timeline) =>
-            [message.data, ...timeline].filter((_, i) => i < 4),
-          );
+        const payload = JSON.parse(res.data);
+        if (payload.type === 'message') {
+          addTimeline(payload.data as timeline);
+        }
+        if (payload.type === 'join') {
+          addTimeline({
+            dummy: false,
+            author: 'システム',
+            text: `${payload.data.author} が参加しました`,
+            ts: payload.data.ts,
+          });
+        }
+        if (payload.type === 'left') {
+          addTimeline({
+            dummy: false,
+            author: 'システム',
+            text: `${payload.data.author} が帰りました`,
+            ts: payload.data.ts,
+          });
         }
       };
     }
-  }, [setTimeline, socket]);
+  }, [addTimeline, socket]);
 
   const sendMessage = (message: string) => {
     socket?.send(
@@ -45,7 +66,7 @@ export const useChat = () => {
     );
   };
 
-  const join = () => {
+  const join = (username: string) => {
     socket?.send(
       JSON.stringify({
         type: 'join',

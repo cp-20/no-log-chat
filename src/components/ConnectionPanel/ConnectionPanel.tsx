@@ -5,6 +5,7 @@ import { useAtom } from 'jotai';
 import { useEffect } from 'react';
 import { usernameAtom } from '@/atoms/username';
 import { TitleHeader } from '@/components/TitleHeader/TitleHeader';
+import { useChat } from '@/lib/chat';
 type Props = {
   connect: () => void;
 };
@@ -14,6 +15,8 @@ type formValues = {
 };
 
 export const ConnectionPanel: React.FC<Props> = ({ connect }) => {
+  const { join } = useChat();
+
   const [defaultUsername, setUsernameStorage] = useLocalStorage({
     key: 'username',
     defaultValue: '',
@@ -36,6 +39,7 @@ export const ConnectionPanel: React.FC<Props> = ({ connect }) => {
     const { username } = values;
     setUsernameStorage(username);
     setUsername(username);
+    join(username);
     connect();
   };
 

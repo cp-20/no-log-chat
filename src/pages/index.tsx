@@ -6,7 +6,6 @@ import { ConnectionPanel } from '@/components/ConnectionPanel/ConnectionPanel';
 import { InputArea } from '@/components/InputArea/InputArea';
 import { Timeline } from '@/components/Timeline/Timeline';
 import { TitleHeader } from '@/components/TitleHeader/TitleHeader';
-import { useChat } from '@/lib/chat';
 import Styles from '@/styles/pages/index.module.scss';
 
 type connectionState = 'CLOSE' | 'CONNECTING' | 'CONNECTED';
@@ -14,10 +13,8 @@ type connectionState = 'CLOSE' | 'CONNECTING' | 'CONNECTED';
 const Home: NextPage = () => {
   const [connectionState, setConnectionState] =
     useState<connectionState>('CLOSE');
-  const { join } = useChat();
 
   const connect = () => {
-    join();
     setConnectionState('CONNECTING');
 
     setTimeout(() => setConnectionState('CONNECTED'), 200);
