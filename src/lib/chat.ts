@@ -3,10 +3,13 @@ import { atom } from 'jotai';
 import { useCallback, useEffect } from 'react';
 import { timeline, TimelineAtom } from '@/atoms/timeline';
 import { useUsernameAtom } from '@/atoms/username';
+import { useNotification } from '@/lib/notification';
 
 const socketAtom = atom<WebSocket | null>(null);
 
 export const useChat = () => {
+  const { notify } = useNotification();
+
   const [socket, setSocket] = useAtom(socketAtom);
   const [_, setTimeline] = useAtom(TimelineAtom);
   const username = useUsernameAtom();
@@ -14,8 +17,9 @@ export const useChat = () => {
   const addTimeline = useCallback(
     (data: timeline) => {
       setTimeline((timeline) => [data, ...timeline].filter((_, i) => i < 4));
+      notify();
     },
-    [setTimeline],
+    [notify, setTimeline],
   );
 
   useEffect(() => {
