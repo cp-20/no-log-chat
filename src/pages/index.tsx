@@ -6,6 +6,7 @@ import { ConnectionPanel } from '@/components/ConnectionPanel/ConnectionPanel';
 import { InputArea } from '@/components/InputArea/InputArea';
 import { Timeline } from '@/components/Timeline/Timeline';
 import { TitleHeader } from '@/components/TitleHeader/TitleHeader';
+import { TweetButton } from '@/components/TweetButton/TweetButton';
 import Styles from '@/styles/pages/index.module.scss';
 
 type connectionState = 'CLOSE' | 'CONNECTING' | 'CONNECTED';
@@ -38,6 +39,7 @@ const Home: NextPage = () => {
                 <TitleHeader />
                 <Timeline />
                 <InputArea />
+                <TweetButton />
               </Stack>
             )}
           </Transition>

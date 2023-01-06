@@ -1,0 +1,12 @@
+.tweet-button {
+  color: #222;
+  text-align: center;
+
+  &:hover {
+    color: #999;
+  }
+
+  &:focus {
+    color: #999;
+  }
+}
