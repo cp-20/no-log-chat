@@ -1,19 +1,22 @@
 import { useAtom } from 'jotai';
-import { useEffect, useState } from 'react';
-import { TimelineAtom } from '@/components/atoms/timeline';
+import { atom } from 'jotai';
+import { useEffect } from 'react';
+import { TimelineAtom } from '@/atoms/timeline';
+import { useUsernameAtom } from '@/atoms/username';
+
+const socketAtom = atom<WebSocket | null>(null);
 
 export const useChat = () => {
-  const [socket, setSocket] = useState<WebSocket | null>(null);
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+  const [socket, setSocket] = useAtom(socketAtom);
   const [_, setTimeline] = useAtom(TimelineAtom);
+  const username = useUsernameAtom();
 
   useEffect(() => {
-    if (!socket) {
-      console.log(`ws://${location.hostname}:8000`);
-
-      setSocket(new WebSocket(`ws://${location.hostname}:8000`));
-    }
-  }, [socket]);
+    setSocket((socket) => {
+      if (socket) return socket;
+      return new WebSocket(`ws://${location.hostname}:8000`);
+    });
+  }, [setSocket]);
 
   useEffect(() => {
     if (socket) {
@@ -21,9 +24,7 @@ export const useChat = () => {
         const message = JSON.parse(res.data);
         if (message.type === 'message') {
           setTimeline((timeline) =>
-            [...timeline, message.data].filter(
-              (_, i, arr) => i >= arr.length - 3,
-            ),
+            [message.data, ...timeline].filter((_, i) => i < 4),
           );
         }
       };
@@ -35,7 +36,8 @@ export const useChat = () => {
       JSON.stringify({
         type: 'message',
         data: {
-          author: 'someone',
+          dummy: false,
+          author: username,
           text: message,
           ts: Date.now(),
         },
@@ -43,5 +45,17 @@ export const useChat = () => {
     );
   };
 
-  return { sendMessage };
+  const join = () => {
+    socket?.send(
+      JSON.stringify({
+        type: 'join',
+        data: {
+          author: username,
+          ts: Date.now(),
+        },
+      }),
+    );
+  };
+
+  return { sendMessage, join };
 };

@@ -1,10 +1,28 @@
+import { Stack, Transition } from '@mantine/core';
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import { useState } from 'react';
+import { ConnectionPanel } from '@/components/ConnectionPanel/ConnectionPanel';
 import { InputArea } from '@/components/InputArea/InputArea';
 import { Timeline } from '@/components/Timeline/Timeline';
+import { TitleHeader } from '@/components/TitleHeader/TitleHeader';
+import { useChat } from '@/lib/chat';
 import Styles from '@/styles/pages/index.module.scss';
 
+type connectionState = 'CLOSE' | 'CONNECTING' | 'CONNECTED';
+
 const Home: NextPage = () => {
+  const [connectionState, setConnectionState] =
+    useState<connectionState>('CLOSE');
+  const { join } = useChat();
+
+  const connect = () => {
+    join();
+    setConnectionState('CONNECTING');
+
+    setTimeout(() => setConnectionState('CONNECTED'), 200);
+  };
+
   return (
     <>
       <Head>
@@ -13,8 +31,30 @@ const Home: NextPage = () => {
 
       <div className={Styles['main-container']}>
         <main className={Styles.main}>
-          <Timeline />
-          <InputArea />
+          <Transition
+            mounted={connectionState === 'CONNECTED'}
+            transition="fade"
+            duration={200}
+          >
+            {(styles) => (
+              <Stack style={styles}>
+                <TitleHeader />
+                <Timeline />
+                <InputArea />
+              </Stack>
+            )}
+          </Transition>
+          <Transition
+            mounted={connectionState === 'CLOSE'}
+            transition="fade"
+            duration={200}
+          >
+            {(styles) => (
+              <div style={styles}>
+                <ConnectionPanel connect={connect} />
+              </div>
+            )}
+          </Transition>
         </main>
       </div>
     </>

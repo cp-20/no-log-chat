@@ -1,5 +1,18 @@
+.timeline {
+  overflow: auto;
+  height: min(400px, calc(100vh - 200px));
+}
+
 .timeline-content {
+  min-height: 0;
   padding: 16px;
   border: solid 1px lightgrey;
+  border-radius: 4px;
+}
+
+.timeline-dummy {
+  height: 84px;
+  padding: 16px;
+  border: dashed 1px lightgrey;
   border-radius: 4px;
 }

@@ -16,8 +16,11 @@ export const InputArea: React.FC = () => {
   });
 
   const onSubmit = (values: formValue) => {
-    sendMessage(values.content);
+    const { content } = values;
     form.reset();
+    if (content) {
+      sendMessage(content);
+    }
   };
 
   return (

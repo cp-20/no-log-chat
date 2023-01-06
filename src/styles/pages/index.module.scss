@@ -7,8 +7,4 @@
 .main {
   width: min(640px, calc(100vw - 32px));
   margin: 0 auto;
-
-  & > *:not(:last-of-type) {
-    margin-bottom: 32px;
-  }
 }

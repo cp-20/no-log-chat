@@ -1,19 +1,15 @@
-import { Stack, Text } from '@mantine/core';
-import Styles from './timeline.module.scss';
-import { useTimelineAtom } from '@/components/atoms/timeline';
+import { Flex } from '@mantine/core';
+import { useTimelineAtom } from '@/atoms/timeline';
+import { TimelineContent } from '@/components/Timeline/TimelineContent';
+import Styles from '@/components/Timeline/timeline.module.scss';
 
 export const Timeline: React.FC = () => {
-  const timelineContents = useTimelineAtom();
+  const timelines = useTimelineAtom();
   return (
-    <Stack>
-      {timelineContents.map((timelineContent) => (
-        <div key={timelineContent.ts} className={Styles['timeline-content']}>
-          <Text fw="bold" color="dark" sx={{ wordBreak: 'break-all' }}>
-            {timelineContent.author}
-          </Text>
-          <Text sx={{ wordBreak: 'break-all' }}>{timelineContent.text}</Text>
-        </div>
+    <Flex className={Styles.timeline} direction="column-reverse" gap="md">
+      {timelines.map((timeline, i) => (
+        <TimelineContent timeline={timeline} index={i} key={timeline.ts} />
       ))}
-    </Stack>
+    </Flex>
   );
 };
