@@ -5,7 +5,7 @@
 }
 
 .main {
-  max-width: 960px;
+  width: min(640px, calc(100vw - 32px));
   margin: 0 auto;
 
   & > *:not(:last-of-type) {

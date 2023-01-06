@@ -28,6 +28,7 @@
     "@mantine/form": "^5.10.0",
     "@mantine/hooks": "^5.10.0",
     "@mantine/next": "^5.10.0",
+    "jotai": "^1.12.1",
     "next": "^13.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import { atom, useAtom } from 'jotai';
 
 type timelineContent = {
   author: string;
@@ -6,7 +6,7 @@ type timelineContent = {
   ts: number;
 };
 
-const TimelineContext = createContext<timelineContent[]>([
+export const TimelineAtom = atom<timelineContent[]>([
   {
     author: 'cp20',
     text: 'lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem',
@@ -24,20 +24,7 @@ const TimelineContext = createContext<timelineContent[]>([
   },
 ]);
 
-export const useTimelineContext = () => {
-  const context = useContext(TimelineContext);
-  return context;
-};
-
-type Props = { children: React.ReactNode; value: timelineContent[] };
-
-export const TimelineContextProvider: React.FC<Props> = ({
-  children,
-  value,
-}) => {
-  return (
-    <TimelineContext.Provider value={value}>
-      {children}
-    </TimelineContext.Provider>
-  );
+export const useTimelineAtom = () => {
+  const [atom] = useAtom(TimelineAtom);
+  return atom;
 };

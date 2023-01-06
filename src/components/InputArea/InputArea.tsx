@@ -1,11 +1,14 @@
 import { Button, Flex, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useChat } from '@/lib/chat';
 
 type formValue = {
   content: string;
 };
 
 export const InputArea: React.FC = () => {
+  const { sendMessage } = useChat();
+
   const form = useForm<formValue>({
     initialValues: {
       content: '',
@@ -13,8 +16,8 @@ export const InputArea: React.FC = () => {
   });
 
   const onSubmit = (values: formValue) => {
+    sendMessage(values.content);
     form.reset();
-    console.log(values);
   };
 
   return (
