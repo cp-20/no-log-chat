@@ -21,7 +21,7 @@ export const useChat = () => {
   useEffect(() => {
     setSocket((socket) => {
       if (socket) return socket;
-      return new WebSocket(`ws://cp-20-no-log-chat-server.deno.dev:80`);
+      return new WebSocket(process.env.NEXT_PUBLIC_API_SERVER as string);
     });
   }, [setSocket]);
 
