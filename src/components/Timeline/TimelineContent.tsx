@@ -33,25 +33,21 @@ export const TimelineContent: React.FC<Props> = ({ timeline, index }) => {
 
   return (
     <Transition mounted={visibility} transition={scaleY} duration={500}>
-      {(styles) =>
-        timeline.dummy ? (
-          <div className={Styles['timeline-dummy']} style={styles} />
-        ) : (
-          <div className={Styles['timeline-content']} style={styles}>
-            <Text
-              fw="bold"
-              color="dark"
-              lineClamp={1}
-              sx={{ wordBreak: 'break-all' }}
-            >
-              {timeline.author}
-            </Text>
-            <Text sx={{ wordBreak: 'break-all' }} lineClamp={2}>
-              {timeline.text}
-            </Text>
-          </div>
-        )
-      }
+      {(styles) => (
+        <div className={Styles['timeline-content']} style={styles}>
+          <Text
+            fw="bold"
+            color="dark"
+            lineClamp={1}
+            sx={{ wordBreak: 'break-all' }}
+          >
+            {timeline.author}
+          </Text>
+          <Text sx={{ wordBreak: 'break-all' }} lineClamp={2}>
+            {timeline.text}
+          </Text>
+        </div>
+      )}
     </Transition>
   );
 };

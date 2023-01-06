@@ -21,7 +21,7 @@ export const useChat = () => {
   useEffect(() => {
     setSocket((socket) => {
       if (socket) return socket;
-      return new WebSocket(`ws://${location.hostname}:8000`);
+      return new WebSocket(`ws://cp-20-no-log-chat-server.deno.dev:80`);
     });
   }, [setSocket]);
 
@@ -34,7 +34,6 @@ export const useChat = () => {
         }
         if (payload.type === 'join') {
           addTimeline({
-            dummy: false,
             author: 'システム',
             text: `${payload.data.author} が参加しました`,
             ts: payload.data.ts,
@@ -42,7 +41,6 @@ export const useChat = () => {
         }
         if (payload.type === 'left') {
           addTimeline({
-            dummy: false,
             author: 'システム',
             text: `${payload.data.author} が帰りました`,
             ts: payload.data.ts,
@@ -57,7 +55,6 @@ export const useChat = () => {
       JSON.stringify({
         type: 'message',
         data: {
-          dummy: false,
           author: username,
           text: message,
           ts: Date.now(),
