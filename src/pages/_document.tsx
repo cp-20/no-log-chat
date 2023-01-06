@@ -1,10 +1,7 @@
 import { createGetInitialProps } from '@mantine/next';
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 import { GoogleAdsense } from '@/components/Injection/GoogleAdsense';
-import {
-  GoogleTagManager,
-  GoogleTagManagerBody,
-} from '@/components/Injection/GoogleTagManager';
+import { GoogleTagManagerBody } from '@/components/Injection/GoogleTagManager';
 
 const getInitialProps = createGetInitialProps();
 
@@ -15,7 +12,6 @@ export default class _Document extends Document {
     return (
       <Html>
         <Head>
-          <GoogleTagManager />
           <GoogleAdsense />
 
           <meta
