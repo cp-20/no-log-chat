@@ -3,7 +3,7 @@ import Head from 'next/head';
 export const Description: React.FC = () => {
   const title =
     'のーろぐちゃっと - ログが残らないチャットでみんなと会話しよう！';
-  const description = 'のーろぐちゃっとでみんなと会話しよう！';
+  const description = 'ログが残らないチャットでみんなと会話しよう！';
 
   return (
     <Head>
