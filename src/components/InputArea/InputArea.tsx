@@ -26,7 +26,7 @@ export const InputArea: React.FC = () => {
   return (
     <>
       <div>
-        <form onSubmit={form.onSubmit(onSubmit)}>
+        <form onSubmit={form.onSubmit(onSubmit)} id="post-message-form">
           <Flex>
             <TextInput
               name="content"

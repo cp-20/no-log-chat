@@ -47,7 +47,7 @@ export const ConnectionPanel: React.FC<Props> = ({ connect }) => {
     <>
       <TitleHeader />
 
-      <form onSubmit={form.onSubmit(onSubmit)}>
+      <form onSubmit={form.onSubmit(onSubmit)} id="connection-panel-form">
         <Flex>
           <TextInput
             autoComplete="off"
