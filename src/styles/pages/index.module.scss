@@ -8,3 +8,13 @@
   width: min(640px, calc(100vw - 32px));
   margin: 0 auto;
 }
+
+.footer {
+  margin-top: 64px;
+
+  @media screen and (min-height: 780px) {
+    position: absolute;
+    bottom: 8px;
+    width: 100vw;
+  }
+}

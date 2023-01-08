@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ConnectionPanel } from '@/components/ConnectionPanel/ConnectionPanel';
 import { Description } from '@/components/Description/Description';
 import { InputArea } from '@/components/InputArea/InputArea';
+import { Socials } from '@/components/Socials/Socials';
 import { Timeline } from '@/components/Timeline/Timeline';
 import { TitleHeader } from '@/components/TitleHeader/TitleHeader';
 import { TweetButton } from '@/components/TweetButton/TweetButton';
@@ -53,6 +54,9 @@ const Home: NextPage = () => {
             )}
           </Transition>
         </main>
+        <footer className={Styles.footer}>
+          <Socials />
+        </footer>
       </div>
     </>
   );

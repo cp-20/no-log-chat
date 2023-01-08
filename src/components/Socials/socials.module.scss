@@ -1,0 +1,13 @@
+.social-container {
+  display: grid;
+  place-content: center;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+
+  & > *:not(:last-child) {
+    margin-right: 4px;
+  }
+}
