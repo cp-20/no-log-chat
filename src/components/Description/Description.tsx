@@ -19,7 +19,7 @@ export const Description: React.FC = () => {
       <meta property="og:locale" content="ja" />
       <meta
         property="og:image"
-        content="https://no-log-chat.vercel.app//ogp.png"
+        content="https://no-log-chat.vercel.app/ogp.png"
       />
 
       {/* Twitter Card */}
@@ -29,7 +29,7 @@ export const Description: React.FC = () => {
       <meta name="twitter:description" content={description} />
       <meta
         name="twitter:image"
-        content="https://no-log-chat.vercel.app//ogp.png"
+        content="https://no-log-chat.vercel.app/ogp.png"
       />
     </Head>
   );
