@@ -1,13 +1,13 @@
 import Head from 'next/head';
 
 export const Description: React.FC = () => {
-  const title =
-    'のーろぐちゃっと - ログが残らないチャットでみんなと会話しよう！';
+  const title = 'のーろぐちゃっと';
   const description = 'ログが残らないチャットでみんなと会話しよう！';
+  const pageTitle = `${title} - ${description}`;
 
   return (
     <Head>
-      <title>{title}</title>
+      <title>{pageTitle}</title>
       <meta content={description} name="description" />
 
       {/* OGP */}
