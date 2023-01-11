@@ -23,6 +23,18 @@ export const useChat = () => {
   );
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      socket?.send(
+        JSON.stringify({
+          type: 'ping',
+        }),
+      );
+    }, 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [socket]);
+
+  useEffect(() => {
     setSocket((socket) => {
       if (socket) return socket;
       return new WebSocket(process.env.NEXT_PUBLIC_API_SERVER as string);
