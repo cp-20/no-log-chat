@@ -98,7 +98,7 @@ export const useChat = () => {
           ts: Date.now(),
         });
 
-        console.log(socket);
+        console.log(socket?.readyState);
 
         socket?.close();
         setupSocket();
