@@ -1,4 +1,4 @@
-import { Stack, Text } from '@mantine/core';
+import { IconUsers } from '@tabler/icons';
 import { useAtom } from 'jotai';
 import Styles from '@/components/MemberList/member-list.module.scss';
 import { membersAtom } from '@/lib/chat';
@@ -7,12 +7,8 @@ export const MemberList: React.FC = () => {
   const [members] = useAtom(membersAtom);
   return (
     <div className={Styles['member-list']}>
-      オンライン : {members.length}
-      <Stack>
-        {members.map((member) => (
-          <Text key={member}>{member}</Text>
-        ))}
-      </Stack>
+      <IconUsers className={Styles['member-list-icon']} />
+      <span className={Styles['member-list-counter']}>{members.length}</span>
     </div>
   );
 };

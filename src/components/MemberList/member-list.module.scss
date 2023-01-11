@@ -1,6 +1,19 @@
 .member-list {
-  width: 160px;
+  display: grid;
   padding: 8px 16px;
   border: solid lightgrey 1px;
   border-radius: 4px;
+  column-gap: 8px;
+  grid-template-columns: auto auto;
+  place-items: center;
+}
+
+.member-list-icon {
+  height: 24px;
+  color: lightgrey;
+}
+
+.member-list-counter {
+  color: gray;
+  font-size: 16px;
 }
