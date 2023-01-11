@@ -6,12 +6,14 @@ import { useUsernameAtom } from '@/atoms/username';
 import { useNotification } from '@/lib/notification';
 
 const socketAtom = atom<WebSocket | null>(null);
+export const membersAtom = atom<string[]>([]);
 
 export const useChat = () => {
   const { notify } = useNotification();
 
   const [socket, setSocket] = useAtom(socketAtom);
-  const [_, setTimeline] = useAtom(TimelineAtom);
+  const [_members, setMembers] = useAtom(membersAtom);
+  const [_timeline, setTimeline] = useAtom(TimelineAtom);
   const username = useUsernameAtom();
 
   const addTimeline = useCallback(
@@ -62,9 +64,12 @@ export const useChat = () => {
             ts: payload.data.ts,
           });
         }
+        if (payload.type === 'memberUpdate') {
+          setMembers(payload.data.members);
+        }
       };
     }
-  }, [addTimeline, socket]);
+  }, [addTimeline, setMembers, socket]);
 
   const sendMessage = (message: string) => {
     socket?.send(
