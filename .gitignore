@@ -36,3 +36,6 @@ yarn-error.log*
 
 # env
 .env
+
+# *.scssの型定義ファイル
+*.scss.d.ts
