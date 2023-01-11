@@ -13,7 +13,7 @@ export const useChat = () => {
   const [socket, setSocket] = useAtom(socketAtom);
   const [_, setTimeline] = useAtom(TimelineAtom);
   const username = useUsernameAtom();
-  const ping = useRef(true);
+  const ping = useRef(false);
 
   const addTimeline = useCallback(
     (data: timeline) => {
