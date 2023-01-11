@@ -10,15 +10,17 @@ export const TweetButton = () => {
   const username = useUsernameAtom();
 
   return (
-    <Link
-      href={`https://twitter.com/intent/tweet?url=${url}&text=${text(
-        username,
-      )}&hashtags=のーろぐちゃっと`}
-      className={Styles['tweet-button']}
-      about="_blank"
-      rel="noopener noreferrer"
-    >
-      Twitterで友達を呼ぶ
-    </Link>
+    <div className={Styles['tweet-button-container']}>
+      <Link
+        href={`https://twitter.com/intent/tweet?url=${url}&text=${text(
+          username,
+        )}&hashtags=のーろぐちゃっと`}
+        className={Styles['tweet-button']}
+        about="_blank"
+        rel="noopener noreferrer"
+      >
+        Twitterで友達を呼ぶ
+      </Link>
+    </div>
   );
 };
