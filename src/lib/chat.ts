@@ -57,6 +57,8 @@ export const useChat = () => {
           });
         }
         if (payload.type === 'pong') {
+          console.log('pong');
+
           ping.current = false;
         }
       };
@@ -109,6 +111,7 @@ export const useChat = () => {
           type: 'ping',
         }),
       );
+      console.log('ping');
     }, 3 * 1000); // 3s
 
     return () => clearInterval(interval);
