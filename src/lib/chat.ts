@@ -98,6 +98,8 @@ export const useChat = () => {
           ts: Date.now(),
         });
 
+        console.log(socket);
+
         socket?.close();
         setupSocket();
         ping.current = false;
@@ -105,12 +107,12 @@ export const useChat = () => {
         return;
       }
 
-      ping.current = true;
       socket?.send(
         JSON.stringify({
           type: 'ping',
         }),
       );
+      ping.current = true;
       console.log('ping');
     }, 3 * 1000); // 3s
 
