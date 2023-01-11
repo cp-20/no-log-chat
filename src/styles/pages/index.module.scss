@@ -22,20 +22,14 @@
 }
 
 .member-list {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  display: none;
+  display: grid;
+  margin-top: 16px;
+  place-items: center;
 
-  @include media-query.pc {
-    display: block;
-  }
-}
-
-.member-list-mobile {
-  position: fixed;
-
-  @include media-query.pc {
-    display: none;
+  @include media-query.tb {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    margin-top: 0;
   }
 }
