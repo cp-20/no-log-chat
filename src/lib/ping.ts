@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { atom, useAtom } from 'jotai';
+import { useEffect, useRef } from 'react';
 import { useSocketAtom, socketHandler } from '@/atoms/socket';
 import { pingPacket } from '@/lib/packet';
 
@@ -9,8 +10,10 @@ type handlers = {
   errorHandler: errorHandler;
 };
 
+const handlersAtom = atom<handlers | null>(null);
+
 export const usePing = () => {
-  const [handlers, setHandlers] = useState<handlers | null>(null);
+  const [handlers, setHandlers] = useAtom(handlersAtom);
   const { socket, setupSocket, sendPacket } = useSocketAtom();
   const ping = useRef(false);
 
@@ -48,5 +51,15 @@ export const usePing = () => {
     ping.current = false;
   };
 
-  return { pongHandler, setupPing };
+  const closeHandler = (socket: WebSocket) => {
+    console.log('close', socket, handlers);
+
+    if (handlers !== null) {
+      handlers.errorHandler(socket);
+      setupSocket(handlers.socketHandler);
+      ping.current = false;
+    }
+  };
+
+  return { pongHandler, setupPing, closeHandler };
 };

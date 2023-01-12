@@ -11,7 +11,7 @@ export const useSocketAtom = () => {
 
   const sendPacket = useCallback(
     (packet: string) => {
-      if (socket !== null) {
+      if (socket !== null && socket.readyState === WebSocket.OPEN) {
         socket.send(packet);
       } else {
         console.error('failed to set packet');

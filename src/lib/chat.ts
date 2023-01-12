@@ -18,7 +18,7 @@ export const useChat = () => {
   const { sendPacket, setupSocket } = useSocketAtom();
   const { updateMembers } = useMembersAtom();
   const { addTimeline } = useTimelineAtom();
-  const { pongHandler, setupPing } = usePing();
+  const { pongHandler, setupPing, closeHandler } = usePing();
 
   const socketHandler: (username: string) => socketHandler = useCallback(
     (username: string) => (socket: WebSocket) => {
@@ -43,11 +43,13 @@ export const useChat = () => {
 
       socket.onopen = () => {
         console.log('connected', username);
-        // socketが更新される前に送信しようとするためsendPacketだと送れない → socket.sendで直接送信
+        // socketが更新される前に送信しようとするためsendPacketだと送れない → socket.sendで直接送る
         socket.send(joinPacket(username));
       };
+      socket.onclose = () => closeHandler(socket);
+      socket.onerror = () => closeHandler(socket);
     },
-    [addTimeline, pongHandler, updateMembers],
+    [addTimeline, closeHandler, pongHandler, updateMembers],
   );
 
   const errorHandler: errorHandler = useCallback(() => {
