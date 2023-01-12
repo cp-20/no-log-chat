@@ -13,6 +13,8 @@ export const useSocketAtom = () => {
     (packet: string) => {
       if (socket !== null) {
         socket.send(packet);
+      } else {
+        console.error('failed to set packet');
       }
     },
     [socket],
@@ -21,7 +23,11 @@ export const useSocketAtom = () => {
   const setupSocket = useCallback(
     (socketHandler: socketHandler) => {
       setSocket((socket) => {
-        if (socket && socket.readyState !== socket.CLOSED) return socket;
+        if (
+          socket &&
+          [WebSocket.OPEN, WebSocket.CONNECTING].includes(socket.readyState)
+        )
+          return socket;
 
         const newSocket = new WebSocket(
           process.env.NEXT_PUBLIC_API_SERVER as string,
