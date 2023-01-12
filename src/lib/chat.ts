@@ -38,7 +38,7 @@ export const useChat = () => {
   }, []);
 
   const socketHandler = useCallback(
-    (socket: WebSocket) => {
+    (socket: WebSocket, username: string) => {
       socket.onmessage = (res) => {
         const payload = JSON.parse(res.data);
         if (payload.type === 'message') {
@@ -70,28 +70,28 @@ export const useChat = () => {
 
       socket.onopen = () => {
         console.log('connected', username);
-
-        if (username) {
-          sendJoinMessage(username, socket);
-        }
+        sendJoinMessage(username, socket);
       };
     },
-    [addTimeline, sendJoinMessage, setMembers, username],
+    [addTimeline, sendJoinMessage, setMembers],
   );
 
-  const setupSocket = useCallback(() => {
-    setSocket((socket) => {
-      if (socket && socket.readyState !== socket.CLOSED) return socket;
+  const setupSocket = useCallback(
+    (username: string) => {
+      setSocket((socket) => {
+        if (socket && socket.readyState !== socket.CLOSED) return socket;
 
-      const newSocket = new WebSocket(
-        process.env.NEXT_PUBLIC_API_SERVER as string,
-      );
+        const newSocket = new WebSocket(
+          process.env.NEXT_PUBLIC_API_SERVER as string,
+        );
 
-      socketHandler(newSocket);
+        socketHandler(newSocket, username);
 
-      return newSocket;
-    });
-  }, [setSocket, socketHandler]);
+        return newSocket;
+      });
+    },
+    [setSocket, socketHandler],
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -106,7 +106,7 @@ export const useChat = () => {
         console.log(socket?.readyState);
 
         socket?.close();
-        setupSocket();
+        setupSocket(username);
         ping.current = false;
 
         return;
@@ -122,11 +122,7 @@ export const useChat = () => {
     }, 3 * 1000); // 3s
 
     return () => clearInterval(interval);
-  }, [addTimeline, setupSocket, socket]);
-
-  useEffect(() => {
-    setupSocket();
-  }, [setupSocket]);
+  }, [addTimeline, setupSocket, socket, username]);
 
   const sendMessage = (message: string) => {
     socket?.send(
@@ -143,11 +139,9 @@ export const useChat = () => {
 
   const join = useCallback(
     (username: string) => {
-      if (socket) {
-        sendJoinMessage(username, socket);
-      }
+      setupSocket(username);
     },
-    [sendJoinMessage, socket],
+    [setupSocket],
   );
 
   return { sendMessage, join };
