@@ -6,12 +6,14 @@ import { useUsernameAtom } from '@/atoms/username';
 import { useNotification } from '@/lib/notification';
 
 const socketAtom = atom<WebSocket | null>(null);
+export const membersAtom = atom<string[]>([]);
 
 export const useChat = () => {
   const { notify } = useNotification();
 
   const [socket, setSocket] = useAtom(socketAtom);
-  const [_, setTimeline] = useAtom(TimelineAtom);
+  const [_members, setMembers] = useAtom(membersAtom);
+  const [_timeline, setTimeline] = useAtom(TimelineAtom);
   const username = useUsernameAtom();
   const ping = useRef(false);
 
@@ -61,6 +63,9 @@ export const useChat = () => {
 
           ping.current = false;
         }
+        if (payload.type === 'memberUpdate') {
+          setMembers(payload.data.members);
+        }
       };
 
       socket.onopen = () => {
@@ -71,7 +76,7 @@ export const useChat = () => {
         }
       };
     },
-    [addTimeline, sendJoinMessage, username],
+    [addTimeline, sendJoinMessage, setMembers, username],
   );
 
   const setupSocket = useCallback(() => {

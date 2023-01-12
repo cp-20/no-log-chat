@@ -9,7 +9,7 @@
     "dev:next": "next dev",
     "dev:path": "yarn pathpida -w",
     "dev:css-module-types": "yarn css-module-types -w",
-    "build": "yarn pathpida && next build",
+    "build": "yarn pathpida && yarn css-module-types && next build",
     "start": "next start",
     "pathpida": "pathpida -p .gitignore -o ./src/lib -s",
     "css-module-types": "tcm -p '**/*.module.scss' src",
