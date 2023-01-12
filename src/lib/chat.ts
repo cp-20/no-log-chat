@@ -43,10 +43,11 @@ export const useChat = () => {
 
       socket.onopen = () => {
         console.log('connected', username);
-        sendPacket(joinPacket(username));
+        // socketが更新される前に送信しようとするためsendPacketだと送れない → socket.sendで直接送信
+        socket.send(joinPacket(username));
       };
     },
-    [addTimeline, pongHandler, sendPacket, updateMembers],
+    [addTimeline, pongHandler, updateMembers],
   );
 
   const errorHandler: errorHandler = useCallback(() => {
