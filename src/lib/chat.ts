@@ -42,7 +42,6 @@ export const useChat = () => {
       };
 
       socket.onopen = () => {
-        console.log('connected', username);
         // socketが更新される前に送信しようとするためsendPacketだと送れない → socket.sendで直接送る
         socket.send(joinPacket(username));
       };

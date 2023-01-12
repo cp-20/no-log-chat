@@ -33,7 +33,6 @@ export const usePing = () => {
 
         sendPacket(pingPacket());
         ping.current = true;
-        console.log('ping');
       }
     }, 3 * 1000); // 3s
 
@@ -52,8 +51,6 @@ export const usePing = () => {
   };
 
   const closeHandler = (socket: WebSocket) => {
-    console.log('close', socket, handlers);
-
     if (handlers !== null) {
       handlers.errorHandler(socket);
       setupSocket(handlers.socketHandler);
