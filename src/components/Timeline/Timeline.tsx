@@ -4,11 +4,11 @@ import { TimelineContent } from '@/components/Timeline/TimelineContent';
 import Styles from '@/components/Timeline/timeline.module.scss';
 
 export const Timeline: React.FC = () => {
-  const timelines = useTimelineAtom();
+  const { timeline } = useTimelineAtom();
   return (
     <Flex className={Styles.timeline} direction="column-reverse" gap="md">
-      {timelines.map((timeline, i) => (
-        <TimelineContent timeline={timeline} index={i} key={timeline.ts} />
+      {timeline.map((content, i) => (
+        <TimelineContent timeline={content} index={i} key={content.ts} />
       ))}
     </Flex>
   );

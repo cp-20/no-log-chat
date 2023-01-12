@@ -1,100 +1,74 @@
-import { useAtom } from 'jotai';
-import { atom } from 'jotai';
-import { useCallback, useEffect } from 'react';
-import { timeline, TimelineAtom } from '@/atoms/timeline';
+import { useCallback } from 'react';
+import { useMembersAtom } from '@/atoms/members';
+import { socketHandler, useSocketAtom } from '@/atoms/socket';
+import { useTimelineAtom } from '@/atoms/timeline';
 import { useUsernameAtom } from '@/atoms/username';
-import { useNotification } from '@/lib/notification';
-
-const socketAtom = atom<WebSocket | null>(null);
-export const membersAtom = atom<string[]>([]);
+import { joinPacket, messagePacket, packet } from '@/lib/packet';
+import { usePing } from '@/lib/ping';
+import { errorHandler } from '@/lib/ping';
+import {
+  connectionErrorMessage,
+  joinMessage,
+  leftMessage,
+} from '@/lib/systemMessage';
 
 export const useChat = () => {
-  const { notify } = useNotification();
-
-  const [socket, setSocket] = useAtom(socketAtom);
-  const [_members, setMembers] = useAtom(membersAtom);
-  const [_timeline, setTimeline] = useAtom(TimelineAtom);
   const username = useUsernameAtom();
 
-  const addTimeline = useCallback(
-    (data: timeline) => {
-      setTimeline((timeline) => [data, ...timeline].filter((_, i) => i < 4));
-      notify();
-    },
-    [notify, setTimeline],
-  );
+  const { sendPacket, setupSocket } = useSocketAtom();
+  const { updateMembers } = useMembersAtom();
+  const { addTimeline } = useTimelineAtom();
+  const { pongHandler, setupPing, closeHandler } = usePing();
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      socket?.send(
-        JSON.stringify({
-          type: 'ping',
-        }),
-      );
-    }, 60 * 1000);
-
-    return () => clearInterval(interval);
-  }, [socket]);
-
-  useEffect(() => {
-    setSocket((socket) => {
-      if (socket) return socket;
-      return new WebSocket(process.env.NEXT_PUBLIC_API_SERVER as string);
-    });
-  }, [setSocket]);
-
-  useEffect(() => {
-    if (socket) {
+  const socketHandler: (username: string) => socketHandler = useCallback(
+    (username: string) => (socket: WebSocket) => {
       socket.onmessage = (res) => {
-        const payload = JSON.parse(res.data);
-        if (payload.type === 'message') {
-          addTimeline(payload.data as timeline);
+        const packet = JSON.parse(res.data) as packet;
+        if (packet.type === 'message') {
+          addTimeline(packet.data);
         }
-        if (payload.type === 'join') {
-          addTimeline({
-            author: 'システム',
-            text: `${payload.data.author} が参加しました`,
-            ts: payload.data.ts,
-          });
+        if (packet.type === 'join') {
+          addTimeline(joinMessage(packet));
         }
-        if (payload.type === 'left') {
-          addTimeline({
-            author: 'システム',
-            text: `${payload.data.author} が帰りました`,
-            ts: payload.data.ts,
-          });
+        if (packet.type === 'left') {
+          addTimeline(leftMessage(packet));
         }
-        if (payload.type === 'memberUpdate') {
-          setMembers(payload.data.members);
+        if (packet.type === 'pong') {
+          pongHandler();
+        }
+        if (packet.type === 'memberUpdate') {
+          updateMembers(packet.data.members);
         }
       };
-    }
-  }, [addTimeline, setMembers, socket]);
 
-  const sendMessage = (message: string) => {
-    socket?.send(
-      JSON.stringify({
-        type: 'message',
-        data: {
-          author: username,
-          text: message,
-          ts: Date.now(),
-        },
-      }),
-    );
-  };
+      socket.onopen = () => {
+        // socketが更新される前に送信しようとするためsendPacketだと送れない → socket.sendで直接送る
+        socket.send(joinPacket(username));
+      };
+      socket.onclose = () => closeHandler(socket);
+      socket.onerror = () => closeHandler(socket);
+    },
+    [addTimeline, closeHandler, pongHandler, updateMembers],
+  );
 
-  const join = (username: string) => {
-    socket?.send(
-      JSON.stringify({
-        type: 'join',
-        data: {
-          author: username,
-          ts: Date.now(),
-        },
-      }),
-    );
-  };
+  const errorHandler: errorHandler = useCallback(() => {
+    addTimeline(connectionErrorMessage());
+  }, [addTimeline]);
+
+  const sendMessage = useCallback(
+    (message: string) => {
+      sendPacket(messagePacket(username, message));
+    },
+    [sendPacket, username],
+  );
+
+  const join = useCallback(
+    (username: string) => {
+      setupSocket(socketHandler(username));
+      setupPing(socketHandler(username), errorHandler);
+    },
+    [errorHandler, setupPing, setupSocket, socketHandler],
+  );
 
   return { sendMessage, join };
 };
