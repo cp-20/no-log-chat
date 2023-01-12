@@ -1,29 +1,18 @@
 import { useAtom } from 'jotai';
 import { atom } from 'jotai';
 import { useCallback, useEffect, useRef } from 'react';
-import { timeline, TimelineAtom } from '@/atoms/timeline';
+import { timeline, useTimelineAtom } from '@/atoms/timeline';
 import { useUsernameAtom } from '@/atoms/username';
-import { useNotification } from '@/lib/notification';
 
 const socketAtom = atom<WebSocket | null>(null);
 export const membersAtom = atom<string[]>([]);
 
 export const useChat = () => {
-  const { notify } = useNotification();
-
   const [socket, setSocket] = useAtom(socketAtom);
-  const [_members, setMembers] = useAtom(membersAtom);
-  const [_timeline, setTimeline] = useAtom(TimelineAtom);
+  const [_, setMembers] = useAtom(membersAtom);
+  const { addTimeline } = useTimelineAtom();
   const username = useUsernameAtom();
   const ping = useRef(false);
-
-  const addTimeline = useCallback(
-    (data: timeline) => {
-      setTimeline((timeline) => [data, ...timeline].filter((_, i) => i < 4));
-      notify();
-    },
-    [notify, setTimeline],
-  );
 
   const sendJoinMessage = useCallback((username: string, socket: WebSocket) => {
     socket?.send(
