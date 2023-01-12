@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback } from 'react';
 import { useMembersAtom } from '@/atoms/members';
-import { useSocketAtom } from '@/atoms/socket';
+import { socketHandler, useSocketAtom } from '@/atoms/socket';
 import { useTimelineAtom } from '@/atoms/timeline';
 import { useUsernameAtom } from '@/atoms/username';
-import { joinPacket, messagePacket, packet, pingPacket } from '@/lib/packet';
+import { joinPacket, messagePacket, packet } from '@/lib/packet';
+import { usePing } from '@/lib/ping';
+import { errorHandler } from '@/lib/ping';
 import {
   connectionErrorMessage,
   joinMessage,
@@ -11,13 +13,14 @@ import {
 } from '@/lib/systemMessage';
 
 export const useChat = () => {
-  const { socket, sendPacket, setupSocket } = useSocketAtom();
+  const username = useUsernameAtom();
+
+  const { sendPacket, setupSocket } = useSocketAtom();
   const { updateMembers } = useMembersAtom();
   const { addTimeline } = useTimelineAtom();
-  const username = useUsernameAtom();
-  const ping = useRef(false);
+  const { pongHandler, setupPing } = usePing();
 
-  const socketHandler = useCallback(
+  const socketHandler: (username: string) => socketHandler = useCallback(
     (username: string) => (socket: WebSocket) => {
       socket.onmessage = (res) => {
         const packet = JSON.parse(res.data) as packet;
@@ -31,9 +34,7 @@ export const useChat = () => {
           addTimeline(leftMessage(packet));
         }
         if (packet.type === 'pong') {
-          console.log('pong');
-
-          ping.current = false;
+          pongHandler();
         }
         if (packet.type === 'memberUpdate') {
           updateMembers(packet.data.members);
@@ -45,43 +46,26 @@ export const useChat = () => {
         sendPacket(joinPacket(username));
       };
     },
-    [addTimeline, sendPacket, updateMembers],
+    [addTimeline, pongHandler, sendPacket, updateMembers],
   );
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (socket !== null) {
-        // 前のpingが返ってきてなければ
-        if (ping.current) {
-          addTimeline(connectionErrorMessage());
+  const errorHandler: errorHandler = useCallback(() => {
+    addTimeline(connectionErrorMessage());
+  }, [addTimeline]);
 
-          console.log(socket?.readyState);
-
-          socket?.close();
-          setupSocket(socketHandler(username));
-          ping.current = false;
-
-          return;
-        }
-
-        sendPacket(pingPacket());
-        ping.current = true;
-        console.log('ping');
-      }
-    }, 3 * 1000); // 3s
-
-    return () => clearInterval(interval);
-  }, [addTimeline, sendPacket, setupSocket, socket, socketHandler, username]);
-
-  const sendMessage = (message: string) => {
-    sendPacket(messagePacket(username, message));
-  };
+  const sendMessage = useCallback(
+    (message: string) => {
+      sendPacket(messagePacket(username, message));
+    },
+    [sendPacket, username],
+  );
 
   const join = useCallback(
     (username: string) => {
       setupSocket(socketHandler(username));
+      setupPing(socketHandler(username), errorHandler);
     },
-    [setupSocket, socketHandler],
+    [errorHandler, setupPing, setupSocket, socketHandler],
   );
 
   return { sendMessage, join };

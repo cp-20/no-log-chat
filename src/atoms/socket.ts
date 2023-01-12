@@ -4,6 +4,8 @@ import { useCallback } from 'react';
 
 const socketAtom = atom<WebSocket | null>(null);
 
+export type socketHandler = (socket: WebSocket) => void;
+
 export const useSocketAtom = () => {
   const [socket, setSocket] = useAtom(socketAtom);
 
@@ -17,7 +19,7 @@ export const useSocketAtom = () => {
   );
 
   const setupSocket = useCallback(
-    (socketHandler: (socket: WebSocket) => void) => {
+    (socketHandler: socketHandler) => {
       setSocket((socket) => {
         if (socket && socket.readyState !== socket.CLOSED) return socket;
 
