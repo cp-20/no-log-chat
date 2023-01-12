@@ -1,10 +1,9 @@
 import { IconUsers } from '@tabler/icons';
-import { useAtom } from 'jotai';
+import { useMembersAtom } from '@/atoms/members';
 import Styles from '@/components/MemberList/member-list.module.scss';
-import { membersAtom } from '@/lib/chat';
 
 export const MemberList: React.FC = () => {
-  const [members] = useAtom(membersAtom);
+  const { members } = useMembersAtom();
   return (
     <div className={Styles['member-list']}>
       <IconUsers className={Styles['member-list-icon']} />

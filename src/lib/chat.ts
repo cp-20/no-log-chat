@@ -1,15 +1,15 @@
 import { useAtom } from 'jotai';
 import { atom } from 'jotai';
 import { useCallback, useEffect, useRef } from 'react';
+import { useMembersAtom } from '@/atoms/members';
 import { timeline, useTimelineAtom } from '@/atoms/timeline';
 import { useUsernameAtom } from '@/atoms/username';
 
 const socketAtom = atom<WebSocket | null>(null);
-export const membersAtom = atom<string[]>([]);
 
 export const useChat = () => {
   const [socket, setSocket] = useAtom(socketAtom);
-  const [_, setMembers] = useAtom(membersAtom);
+  const { updateMembers } = useMembersAtom();
   const { addTimeline } = useTimelineAtom();
   const username = useUsernameAtom();
   const ping = useRef(false);
@@ -53,7 +53,7 @@ export const useChat = () => {
           ping.current = false;
         }
         if (payload.type === 'memberUpdate') {
-          setMembers(payload.data.members);
+          updateMembers(payload.data.members);
         }
       };
 
@@ -62,7 +62,7 @@ export const useChat = () => {
         sendJoinMessage(username, socket);
       };
     },
-    [addTimeline, sendJoinMessage, setMembers],
+    [addTimeline, sendJoinMessage, updateMembers],
   );
 
   const setupSocket = useCallback(
