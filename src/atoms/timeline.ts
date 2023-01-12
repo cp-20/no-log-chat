@@ -1,12 +1,9 @@
 import { atom, useAtom } from 'jotai';
 import { useCallback } from 'react';
 import { useNotification } from '@/lib/notification';
+import { messagePacket } from '@/lib/packet';
 
-export type timeline = {
-  author: string;
-  text: string;
-  ts: number;
-};
+export type timeline = messagePacket['data'];
 
 export const TimelineAtom = atom<timeline[]>([]);
 export const MESSAGE_LIMIT = 3;
