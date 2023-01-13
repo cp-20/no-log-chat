@@ -1,6 +1,6 @@
 import { atom, useAtom } from 'jotai';
 
-export const membersAtom = atom<string[]>([]);
+export const membersAtom = atom<string[] | null>(null);
 
 export const useMembersAtom = () => {
   const [members, setMembers] = useAtom(membersAtom);
