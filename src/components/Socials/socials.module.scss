@@ -1,6 +1,8 @@
 .social-container {
-  display: grid;
-  place-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
 }
 
 .social-link {

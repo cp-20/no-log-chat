@@ -1,4 +1,4 @@
-import { IconBrandTwitter } from '@tabler/icons';
+import { IconBrandTwitter, IconBrandDiscord } from '@tabler/icons';
 import { Link } from '@/components/Link/Link';
 import Styles from '@/components/Socials/socials.module.scss';
 
@@ -11,6 +11,14 @@ export const Socials: React.FC = () => (
     >
       <IconBrandTwitter />
       <span>開発者のついった</span>
+    </Link>
+    <Link
+      href="https://discord.gg/YQ7negGTUK"
+      isExternal
+      className={Styles['social-link']}
+    >
+      <IconBrandDiscord />
+      <span>サポートコミュニティ</span>
     </Link>
   </div>
 );
